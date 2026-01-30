@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MIREX - Real Vaqt Tarjima</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 600px;
+            width: 100%;
+            padding: 40px;
+        }
+
+        h1 {
+            color: #667eea;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+
+        .tagline {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 0.9em;
+        }
+
+        .language-selector {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .lang-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 10px;
+        }
+
+        select {
+            padding: 10px 15px;
+            border: 2px solid #667eea;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            background: white;
+            min-width: 130px;
+        }
+
+        .swap-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 18px;
+            transition: all 0.3s;
+        }
+
+        .swap-btn:hover {
+            background: #764ba2;
+            transform: scale(1.1);
+        }
+
+        .translation-area {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .text-box {
+            position: relative;
+        }
+
+        .text-box label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 120px;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 16px;
+            resize: vertical;
+            font-family: inherit;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        #output {
+            background: #f8f9fa;
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        button {
+            padding: 15px 30px;
+            font-size: 16px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #764ba2;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102,126,234,0.4);
+        }
+
+        .btn-secondary {
+            background: #48bb78;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #38a169;
+            transform: translateY(-2px);
+        }
+
+        .btn-danger {
+            background: #f56565;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #e53e3e;
+        }
+
+        .status {
+            text-align: center;
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .status.info {
+            background: #bee3f8;
+            color: #2c5282;
+        }
+
+        .status.success {
+            background: #c6f6d5;
+            color: #22543d;
+        }
+
+        .status.error {
+            background: #fed7d7;
+            color: #742a2a;
+        }
+
+        .recording {
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .feature-list {
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 2px solid #f0f0f0;
+        }
+
+        .feature-list h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+
+        .feature-list ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .feature-list li {
+            padding: 8px 0;
+            padding-left: 25px;
+            position: relative;
+            color: #555;
+        }
+
+        .feature-list li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #48bb78;
+            font-weight: bold;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+
+            .controls {
+                flex-direction: column;
+            }
+
+            button {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        .icon {
+            font-size: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌍 MIREX</h1>
+        <p class="tagline">Tillarni bog'laymiz, dunyolarni birlashtiramaiz</p>
+
+        <div class="language-selector">
+            <div class="lang-group">
+                <label>Dan:</label>
+                <select id="fromLang">
+                    <option value="uz-UZ">O'zbek</option>
+                    <option value="en-US" selected>English</option>
+                    <option value="ru-RU">Русский</option>
+                    <option value="tr-TR">Türkçe</option>
+                    <option value="zh-CN">中文</option>
+                </select>
+            </div>
+
+            <button class="swap-btn" onclick="swapLanguages()" title="Tillarni almashtirish">
+                ⇄
+            </button>
+
+            <div class="lang-group">
+                <label>Ga:</label>
+                <select id="toLang">
+                    <option value="uz">O'zbek</option>
+                    <option value="en">English</option>
+                    <option value="ru" selected>Русский</option>
+                    <option value="tr">Türkçe</option>
+                    <option value="zh">中文</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="translation-area">
+            <div class="text-box">
+                <label for="input">Matn kiriting yoki mikrofon tugmasini bosing:</label>
+                <textarea id="input" placeholder="Bu yerga yozing yoki gapiring..."></textarea>
+            </div>
+
+            <div class="text-box">
+                <label for="output">Tarjima:</label>
+                <textarea id="output" placeholder="Tarjima bu yerda ko'rinadi..." readonly></textarea>
+            </div>
+        </div>
+
+        <div class="controls">
+            <button class="btn-primary" onclick="startListening()" id="voiceBtn">
+                <span class="icon">🎤</span>
+                <span>Ovozli tarjima</span>
+            </button>
+            
+            <button class="btn-secondary" onclick="translateText()" id="translateBtn">
+                <span class="icon">🔄</span>
+                <span>Tarjima qilish</span>
+            </button>
+
+            <button class="btn-secondary" onclick="speakTranslation()" id="speakBtn">
+                <span class="icon">🔊</span>
+                <span>Eshitish</span>
+            </button>
+            
+            <button class="btn-danger" onclick="clearAll()">
+                <span class="icon">🗑️</span>
+                <span>Tozalash</span>
+            </button>
+        </div>
+
+        <div id="status"></div>
+
+        <div class="feature-list">
+            <h3>✨ Imkoniyatlar:</h3>
+            <ul>
+                <li>Real vaqt ovozli tarjima (mikrofon orqali)</li>
+                <li>5 til qo'llab-quvvatlanadi</li>
+                <li>Tarjimani ovozli eshitish</li>
+                <li>Oddiy va tez interfeys</li>
+                <li>100% bepul - hech qanday to'lov yo'q</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        let recognition;
+        let isListening = false;
+
+        // Speech Recognition (Ovozni tanish)
+        if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            recognition = new SpeechRecognition();
+            recognition.continuous = false;
+            recognition.interimResults = false;
+
+            recognition.onresult = function(event) {
+                const transcript = event.results[0][0].transcript;
+                document.getElementById('input').value = transcript;
+                showStatus('Ovoz tanildi! Tarjima qilinmoqda...', 'success');
+                translateText();
+            };
+
+            recognition.onerror = function(event) {
+                showStatus('Xatolik: ' + event.error, 'error');
+                stopListening();
+            };
+
+            recognition.onend = function() {
+                stopListening();
+            };
+        }
+
+        function startListening() {
+            if (!recognition) {
+                showStatus('Uzr, sizning brauzeringiz ovozni qo\'llab-quvvatlamaydi. Chrome yoki Safari ishlatib ko\'ring.', 'error');
+                return;
+            }
+
+            if (isListening) {
+                stopListening();
+                return;
+            }
+
+            const fromLang = document.getElementById('fromLang').value;
+            recognition.lang = fromLang;
+            
+            try {
+                recognition.start();
+                isListening = true;
+                document.getElementById('voiceBtn').classList.add('recording');
+                document.getElementById('voiceBtn').innerHTML = '<span class="icon">⏹️</span><span>To\'xtatish</span>';
+                showStatus('Tinglamoqda... Gapiring!', 'info');
+            } catch (e) {
+                showStatus('Xatolik: ' + e.message, 'error');
+            }
+        }
+
+        function stopListening() {
+            if (recognition && isListening) {
+                recognition.stop();
+            }
+            isListening = false;
+            document.getElementById('voiceBtn').classList.remove('recording');
+            document.getElementById('voiceBtn').innerHTML = '<span class="icon">🎤</span><span>Ovozli tarjima</span>';
+        }
+
+        async function translateText() {
+            const inputText = document.getElementById('input').value.trim();
+            
+            if (!inputText) {
+                showStatus('Iltimos, tarjima qilish uchun matn kiriting!', 'error');
+                return;
+            }
+
+            const fromLang = document.getElementById('toLang').value === 'uz' ? 'uz' : 
+                             document.getElementById('fromLang').value.split('-')[0];
+            const toLang = document.getElementById('toLang').value;
+
+            showStatus('Tarjima qilinmoqda...', 'info');
+
+            try {
+                // MyMemory API (bepul, kuniga 1000 so'rov)
+                const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(inputText)}&langpair=${fromLang}|${toLang}`;
+                
+                const response = await fetch(url);
+                const data = await response.json();
+
+                if (data.responseStatus === 200 || data.responseData) {
+                    document.getElementById('output').value = data.responseData.translatedText;
+                    showStatus('✓ Tarjima tayyor!', 'success');
+                } else {
+                    showStatus('Tarjimada xatolik. Qayta urinib ko\'ring.', 'error');
+                }
+            } catch (error) {
+                // Agar API ishlamasa, oddiy fallback
+                showStatus('Internet ulanishini tekshiring yoki keyinroq urinib ko\'ring.', 'error');
+                console.error('Tarjima xatoligi:', error);
+            }
+        }
+
+        function speakTranslation() {
+            const text = document.getElementById('output').value;
+            
+            if (!text) {
+                showStatus('Tarjima matn yo\'q. Avval tarjima qiling!', 'error');
+                return;
+            }
+
+            if ('speechSynthesis' in window) {
+                const utterance = new SpeechSynthesisUtterance(text);
+                const toLang = document.getElementById('toLang').value;
+                
+                // Til kodini sozlash
+                const langMap = {
+                    'uz': 'tr-TR', // O'zbek uchun turkcha ovoz
+                    'en': 'en-US',
+                    'ru': 'ru-RU',
+                    'tr': 'tr-TR',
+                    'zh': 'zh-CN'
+                };
+                
+                utterance.lang = langMap[toLang] || 'en-US';
+                utterance.rate = 0.9;
+                utterance.pitch = 1;
+                
+                speechSynthesis.speak(utterance);
+                showStatus('🔊 O\'qilmoqda...', 'info');
+            } else {
+                showStatus('Uzr, sizning brauzeringiz ovozli o\'qishni qo\'llab-quvvatlamaydi.', 'error');
+            }
+        }
+
+        function swapLanguages() {
+            const fromSelect = document.getElementById('fromLang');
+            const toSelect = document.getElementById('toLang');
+            const input = document.getElementById('input');
+            const output = document.getElementById('output');
+
+            // Tillarni almashtirish
+            const fromValue = fromSelect.value;
+            const toValue = toSelect.value;
+            
+            // From lang to To lang conversion
+            const fromShort = fromValue.split('-')[0];
+            fromSelect.value = getLongLangCode(toValue);
+            toSelect.value = fromShort;
+
+            // Matnlarni almashtirish
+            const tempText = input.value;
+            input.value = output.value;
+            output.value = tempText;
+
+            showStatus('Tillar almashtirildi!', 'success');
+        }
+
+        function getLongLangCode(shortCode) {
+            const map = {
+                'uz': 'uz-UZ',
+                'en': 'en-US',
+                'ru': 'ru-RU',
+                'tr': 'tr-TR',
+                'zh': 'zh-CN'
+            };
+            return map[shortCode] || 'en-US';
+        }
+
+        function clearAll() {
+            document.getElementById('input').value = '';
+            document.getElementById('output').value = '';
+            document.getElementById('status').innerHTML = '';
+            stopListening();
+        }
+
+        function showStatus(message, type) {
+            const statusDiv = document.getElementById('status');
+            statusDiv.className = 'status ' + type;
+            statusDiv.textContent = message;
+            
+            if (type === 'success') {
+                setTimeout(() => {
+                    statusDiv.innerHTML = '';
+                }, 3000);
+            }
+        }
+
+        // Enter tugmasini bosish bilan tarjima
+        document.getElementById('input').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                translateText();
+            }
+        });
+
+        // Boshlang'ich xabar
+        showStatus('Tayyor! Gapiring yoki matn kiriting.', 'info');
+    </script>
+</body>
+</html>
